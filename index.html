@@ -23,8 +23,9 @@
         }
         h1 {
             text-align: center;
-            margin-bottom: 20px;
+            margin: 20px 0;
             color: #d8b4f8;
+            font-size: 2.2rem;
         }
         .info-section {
             display: flex;
@@ -34,7 +35,7 @@
         }
         .info-section input {
             flex: 1;
-            min-width: 200px;
+            min-width: 180px;
             padding: 8px 12px;
             border-radius: 8px;
             border: 1px solid #8b5cf6;
@@ -51,10 +52,10 @@
             gap: 12px;
             align-items: center;
         }
-        label {
+        .controls label {
             font-weight: 600;
         }
-        input, select, button {
+        input, button {
             padding: 8px 12px;
             border-radius: 8px;
             border: 1px solid #8b5cf6;
@@ -74,14 +75,13 @@
         }
         .total-score {
             text-align: center;
+            font-size: 1.2rem;
             margin: 15px 0;
-            font-size: 1.1rem;
             color: #a5b4fc;
         }
         .total-score span {
             color: #d8b4f8;
             font-weight: bold;
-            font-size: 1.4rem;
         }
         .mod-section {
             background: #16162a;
@@ -104,23 +104,17 @@
             border-left: 3px solid #8b5cf6;
         }
         .question-text {
-            cursor: pointer;
+            margin-bottom: 8px;
             font-weight: 500;
-            margin-bottom: 6px;
-        }
-        .question-text:hover {
-            color: #c4b5fd;
         }
         .answer {
-            display: none;
             background: rgba(139, 92, 246, 0.15);
-            padding: 10px;
+            padding: 8px;
             border-radius: 6px;
-            margin-top: 6px;
+            margin: 6px 0;
             font-style: italic;
-        }
-        .answer.visible {
-            display: block;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
         }
         .score-buttons {
             display: flex;
@@ -128,36 +122,25 @@
             margin-top: 6px;
         }
         .score-btn {
-            padding: 4px 10px;
+            padding: 4px 12px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
         }
-        .score-btn.plus {
-            background: #10b981;
-            color: white;
-        }
-        .score-btn.minus {
-            background: #ef4444;
-            color: white;
-        }
+        .score-btn.plus { background: #10b981; color: white; }
+        .score-btn.minus { background: #ef4444; color: white; }
         .score-btn.active {
             transform: scale(1.1);
-            box-shadow: 0 0 8px rgba(255,255,255,0.5);
+            box-shadow: 0 0 8px rgba(255,255,255,0.6);
         }
-        .actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 6px;
-        }
-        .btn-small {
+        .remove-btn {
+            margin-left: auto;
             padding: 4px 8px;
-            font-size: 0.85rem;
-        }
-        .restore-btn {
-            display: block;
-            margin: 15px auto;
-            width: fit-content;
+            background: #4b5563;
+            color: #e0e0ff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -197,10 +180,10 @@
                 { q: "Чем конвертируется EU в RF?", a: "Power Converter и Квантовый конвентер" },
                 { q: "Сколько в 1 EU RF?", a: "1 eu = 4 рф" },
                 { q: "Как разъединить провода?", a: "Покрасить их валиком/аппликатором цвета в разные цвета" },
-                { q: "Где брать дистилированную воду и для чего она используется?", a: "Парогенератор/Солнечный опреснитель Вода используется для экономии крафта хладагента" },
+                { q: "Где брать дистилированную воду и для чего она используется?", a: "Парогенератор/Солнечный опреснитель. Вода используется для экономии крафта хладагента" },
                 { q: "Какое количество улучшений каждого вида необходимо для хорошей работы механизмов?", a: "16-20 (синий), 6-8 (желтый), 4(красный)" },
                 { q: "Как включить полёт на гравитационном желе?", a: "В настройках Gravi Fly Key" },
-                { q: "Как получать хмель?", a: "Адский нарост + адский нарост." },
+                { q: "Как получать хмель?", a: "Красная пшеница + красная пшеница, кофе + кофе, адский нарост + адский нарост, резиновый тростник + резиновый тростник" },
                 { q: "Взрывается ли от перегрева ядерный реактор?", a: "Нет, но реактор пропадает" }
             ],
             "Thermal Expansion": [
@@ -220,7 +203,7 @@
                 { q: "Чем можно забирать и поставлять ресурсы в мехи/хранилища?", a: "Шина импорта, Шина Экспорта (// Трубами в интерфейс)" },
                 { q: "Не работает беспроводной терминал, что делать?", a: "Поставить терминал безопасности и беспроводную точку доступа, в неё положить улучшения" },
                 { q: "Как можно передавать каналы на большое расстояние без кабелей?", a: "Беспроводной соединитель, квантовый мост" },
-                { q: "Как копировать и передавать настройки точке,шинам и т.д. из AE2?", a: "Карта памяти" },
+                { q: "Как копировать и передавать настройки точке, шинам и т.д. из AE2?", a: "Карта памяти" },
                 { q: "Что делать если МЭ Система периодически включается и выключается?", a: "Поставить к МЭ кубу энергетические ячейки, желательно гибридные." },
                 { q: "Как настроить ячейку под определенный ресурс?", a: "Разметить ячейку в верстаке ячеек" },
                 { q: "Что нужно сделать чтобы соединить несколько МЭ Систем в одну?", a: "Провести из каждой МЭ Системы одну шину хранения и один МЭ интерфейс,\nрасположить их так, чтобы шина хранения одной МЭ Системы соединялась с МЭ интерфейсом второй системы. Если МЭ Систем больше 2 - аналогично по цепи." }
@@ -230,13 +213,13 @@
                 { q: "Как узнать что нужно для открытия изучения \"ихор\"?", a: "Shift в неи на Ихор" },
                 { q: "Как убрать заражение? (слизь, жидкость, пары)", a: "Лопата очистителя." },
                 { q: "Для чего нужна мнемоническая матрица?", a: "Увеличивает кол-во запоминаемых крафтов в алхим. конструкции на 2" },
-                { q: "Как сделать Наэлектризованное облако?", a: "Кликнуть заряженным аккумулятором(бронзовым) по обычному нитору" },
+                { q: "Как сделать Наэлектризированное облако?", a: "Кликнуть заряженным аккумулятором(бронзовым) по обычному нитору" },
                 { q: "Какие способы существуют для наполнения жезла висом?", a: "Станция для зарядки жезлов, синтезатор маны для жезлов, узел, плита зарядки жезлов (LoliUtility)" },
                 { q: "Как получить сосуд багровый крови?", a: "Взять в инвентарь стеклянные пузырьки из Thaumcraft, бить ЛКМ полым кинжалом по живым мобам." },
                 { q: "Для чего нужен и как работает магический сборщик?", a: "Автокрафты магического верстака, соеденить с помощью карты памяти интерфейс вис-реле и сборщик, шаблоны записываются на ядре знаний в высекателе знаний" },
                 { q: "Как сменить/снять набалдашник?", a: "Change wand Focus/ shift + change wand focus" },
                 { q: "Какие блоки увеличивают стабильность инфузии(матрицы)?", a: "Свечи, Кластеры, головы игроков, зомби, скелетов(и иссушителей), криперов, мецающие грибы, пилоны маны/гайа/природные, стабилизатор из лоли" },
-                { q: "Почему некоторые узлы ауры вытягивают энергию из других?", a: "Узлы находящиеся на близком расстоянии могут передавать между собой аспекты \"молниями\" энергии (узел может передавать энергию в области 7 на 7 на 7 с ним в центре), чем дальше стоят узлы, тем медленее идет передача." },
+                { q: "Почему некоторые узлы ауры вытягивают энергию из других?", a: "Узлы находящиеся на близком расстоянии могут передавать между собой аспекты \"молниями\" энергии (узел может передавать энергию в области 7 на 7 на 7 с ним в центре), чем дальше стоят узлы, тем медленнее идет передача." },
                 { q: "Как можно превратить обычный узел в заряженный?", a: "Поставить узел-стабилизатор, на него узел и сверху Узел-преобразователь(запитать красным камнем)" },
                 { q: "Как можно передать изучения другому игроку?", a: "Делать дубликаты свитков во время изучения(Иных способов нет)" },
                 { q: "Что нужно для работы ПБ конструкции?", a: "Нужно хранилище, аспекты, нитор под тигелем" }
@@ -334,7 +317,7 @@
                 { q: "В чём разница между улучшенным механическим бассейном маны и его легендарной версией?", a: "Удваивает выход продукции, слот для Магическое улучшение стак" },
                 { q: "Для чего нужна инфернальная печь? Как её автоматизировать? Почему инфернальная печь перестала плавить аспекты?", a: "Переплавляет предметы в аспекты. \nС помощью шины хранения эссенций можно извлекать аспекты. С помощью \"Distillation pattern Encoder\" можно делать шаблоны для аспектов.\nИнфернальная печь переполнена аспектами" },
                 { q: "С помощью чего можно получать эфирные эссенции?", a: "Убийство сущности \"Wisp\", с души данного существа, евкливдовый генератор." },
-                { q: "Как работает Евкливдовый генератор?", a: "Работает за счёт маны, генерирует эфирные эссенции" },
+                { q: "Как работает Евклидовый генератор?", a: "Работает за счёт маны, генерирует эфирные эссенции" },
                 { q: "Как работает резонатор крови и маны?", a: "Крови - позволяет запитывать механизмы кровь из МЭ. Маны - позволяет хранить и отдавать ману из МЭ, можно установить искру." },
                 { q: "В чём разница между обычной и совершенной центрифугой?", a: "Совершенная центрифуга со 100% шансом перерабатывает продукцию" },
                 { q: "Для чего нужна мультитеплица? Из чего она строится и как её собрать?", a: "Позволяет вырабатывать ману с помощью цветов из Botania. Ядро мультитеплицы, Основу мультитеплицы, Темный манакамень и Манастекло - собрать посохом леса" },
@@ -357,7 +340,6 @@
             localStorage.setItem('interviewee', document.getElementById('interviewee').value);
             localStorage.setItem('interviewer', document.getElementById('interviewer').value);
         }
-
         function loadUserData() {
             document.getElementById('interviewee').value = localStorage.getItem('interviewee') || '';
             document.getElementById('interviewer').value = localStorage.getItem('interviewer') || '';
@@ -406,41 +388,35 @@
             card.className = 'question-card';
             card.dataset.id = id;
             card.dataset.mod = mod;
-
             let score = currentScores[id] ?? null;
             const plusActive = score === 1 ? 'active' : '';
             const minusActive = score === 0 ? 'active' : '';
-
             card.innerHTML = `
                 <div class="question-text">${questionObj.q}</div>
-                <div class="answer">${questionObj.a.replace(/\n/g, '<br>')}</div>
+                <div class="answer">${questionObj.a}</div>
                 <div class="score-buttons">
                     <button class="score-btn plus ${plusActive}" data-value="1">+</button>
                     <button class="score-btn minus ${minusActive}" data-value="0">–</button>
-                    <button class="score-btn remove-btn" style="margin-left:auto; padding:4px 8px; background:#4b5563;">Удалить</button>
+                    <button class="remove-btn">Удалить</button>
                 </div>
             `;
-
             card.querySelector('.plus').addEventListener('click', () => {
                 currentScores[id] = 1;
                 card.querySelector('.plus').classList.add('active');
                 card.querySelector('.minus').classList.remove('active');
                 updateScores();
             });
-
             card.querySelector('.minus').addEventListener('click', () => {
                 currentScores[id] = 0;
                 card.querySelector('.minus').classList.add('active');
                 card.querySelector('.plus').classList.remove('active');
                 updateScores();
             });
-
             card.querySelector('.remove-btn').addEventListener('click', () => {
                 delete currentScores[id];
                 card.remove();
                 updateScores();
             });
-
             return card;
         }
 
@@ -449,16 +425,13 @@
             const container = document.getElementById('interview-container');
             container.innerHTML = '';
             currentScores = {};
-
             const rangeInput = document.getElementById('question-range').value.trim();
             const { min, max } = parseRange(rangeInput);
-
             Object.entries(questionBank).forEach(([mod, questions]) => {
                 const count = Math.min(getRandomInt(min, max), questions.length);
                 const shuffled = shuffleArray(questions);
                 const selected = shuffled.slice(0, count);
                 generatedQuestions.push(...selected.map((q, i) => ({ mod, q, i })));
-
                 const section = document.createElement('div');
                 section.className = 'mod-section';
                 section.dataset.mod = mod;
@@ -473,7 +446,6 @@
                 });
                 container.appendChild(section);
             });
-
             updateScores();
         }
 
@@ -487,14 +459,12 @@
             const interviewer = document.getElementById('interviewer').value || 'Не указано';
             const date = new Date().toISOString().split('T')[0];
             const total = parseInt(document.getElementById('total-score').textContent);
-
             const modScores = {};
             document.querySelectorAll('.mod-section').forEach(section => {
                 const mod = section.dataset.mod;
                 const score = parseInt(section.querySelector('.mod-score').textContent);
                 modScores[mod] = score;
             });
-
             const answers = [];
             Object.entries(currentScores).forEach(([id, score]) => {
                 const card = document.querySelector(`[data-id="${id}"]`);
@@ -504,7 +474,6 @@
                 const aText = card.querySelector('.answer').textContent;
                 answers.push({ mod, question: qText, answer: aText, score });
             });
-
             const report = {
                 interviewee,
                 interviewer,
@@ -513,7 +482,6 @@
                 modScores,
                 answers
             };
-
             const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -525,7 +493,6 @@
             URL.revokeObjectURL(url);
         }
 
-        // === ИНИЦИАЛИЗАЦИЯ ===
         document.getElementById('generate-btn').addEventListener('click', generateQuestions);
         document.getElementById('restore-btn').addEventListener('click', restoreQuestions);
         document.getElementById('export-btn').addEventListener('click', exportReport);
