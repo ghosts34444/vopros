@@ -23,9 +23,8 @@
         }
         h1 {
             text-align: center;
-            margin: 20px 0;
+            margin-bottom: 20px;
             color: #d8b4f8;
-            font-size: 2.2rem;
         }
         .info-section {
             display: flex;
@@ -35,7 +34,7 @@
         }
         .info-section input {
             flex: 1;
-            min-width: 180px;
+            min-width: 200px;
             padding: 8px 12px;
             border-radius: 8px;
             border: 1px solid #8b5cf6;
@@ -52,10 +51,10 @@
             gap: 12px;
             align-items: center;
         }
-        .controls label {
+        label {
             font-weight: 600;
         }
-        input, button {
+        input, select, button {
             padding: 8px 12px;
             border-radius: 8px;
             border: 1px solid #8b5cf6;
@@ -75,13 +74,14 @@
         }
         .total-score {
             text-align: center;
-            font-size: 1.2rem;
             margin: 15px 0;
+            font-size: 1.1rem;
             color: #a5b4fc;
         }
         .total-score span {
             color: #d8b4f8;
             font-weight: bold;
+            font-size: 1.4rem;
         }
         .mod-section {
             background: #16162a;
@@ -104,17 +104,23 @@
             border-left: 3px solid #8b5cf6;
         }
         .question-text {
-            margin-bottom: 8px;
+            cursor: pointer;
             font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .question-text:hover {
+            color: #c4b5fd;
         }
         .answer {
+            display: none;
             background: rgba(139, 92, 246, 0.15);
-            padding: 8px;
+            padding: 10px;
             border-radius: 6px;
-            margin: 6px 0;
+            margin-top: 6px;
             font-style: italic;
-            font-size: 0.95rem;
-            white-space: pre-wrap;
+        }
+        .answer.visible {
+            display: block;
         }
         .score-buttons {
             display: flex;
@@ -122,29 +128,36 @@
             margin-top: 6px;
         }
         .score-btn {
-            padding: 4px 12px;
+            padding: 4px 10px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
         }
-        .score-btn.plus { background: #10b981; color: white; }
-        .score-btn.minus { background: #ef4444; color: white; }
+        .score-btn.plus {
+            background: #10b981;
+            color: white;
+        }
+        .score-btn.minus {
+            background: #ef4444;
+            color: white;
+        }
         .score-btn.active {
             transform: scale(1.1);
-            box-shadow: 0 0 8px rgba(255,255,255,0.6);
+            box-shadow: 0 0 8px rgba(255,255,255,0.5);
         }
-        .remove-btn {
-            margin-left: auto;
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .btn-small {
             padding: 4px 8px;
-            background: #4b5563;
-            color: #e0e0ff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            font-size: 0.85rem;
         }
-        .export-section {
-            text-align: center;
-            margin: 20px 0;
+        .restore-btn {
+            display: block;
+            margin: 15px auto;
+            width: fit-content;
         }
     </style>
 </head>
@@ -159,8 +172,8 @@
 
         <div class="controls">
             <label>
-                Вопросов на мод (1–23):
-                <input type="number" id="question-count" min="1" max="23" value="5">
+                Вопросов на мод (диапазон, например: 3-5):
+                <input type="text" id="question-range" placeholder="3-5" value="3-5">
             </label>
             <button id="generate-btn">Сгенерировать</button>
             <button id="restore-btn">Вернуть все</button>
@@ -184,10 +197,10 @@
                 { q: "Чем конвертируется EU в RF?", a: "Power Converter и Квантовый конвентер" },
                 { q: "Сколько в 1 EU RF?", a: "1 eu = 4 рф" },
                 { q: "Как разъединить провода?", a: "Покрасить их валиком/аппликатором цвета в разные цвета" },
-                { q: "Где брать дистилированную воду и для чего она используется?", a: "Парогенератор/Солнечный опреснитель. Вода используется для экономии крафта хладагента" },
+                { q: "Где брать дистилированную воду и для чего она используется?", a: "Парогенератор/Солнечный опреснитель Вода используется для экономии крафта хладагента" },
                 { q: "Какое количество улучшений каждого вида необходимо для хорошей работы механизмов?", a: "16-20 (синий), 6-8 (желтый), 4(красный)" },
                 { q: "Как включить полёт на гравитационном желе?", a: "В настройках Gravi Fly Key" },
-                { q: "Как получать хмель?", a: "Красная пшеница + красная пшеница, кофе + кофе, адский нарост + адский нарост, резиновый тростник + резиновый тростник" },
+                { q: "Как получать хмель?", a: "Адский нарост + адский нарост." },
                 { q: "Взрывается ли от перегрева ядерный реактор?", a: "Нет, но реактор пропадает" }
             ],
             "Thermal Expansion": [
@@ -207,7 +220,7 @@
                 { q: "Чем можно забирать и поставлять ресурсы в мехи/хранилища?", a: "Шина импорта, Шина Экспорта (// Трубами в интерфейс)" },
                 { q: "Не работает беспроводной терминал, что делать?", a: "Поставить терминал безопасности и беспроводную точку доступа, в неё положить улучшения" },
                 { q: "Как можно передавать каналы на большое расстояние без кабелей?", a: "Беспроводной соединитель, квантовый мост" },
-                { q: "Как копировать и передавать настройки точке, шинам и т.д. из AE2?", a: "Карта памяти" },
+                { q: "Как копировать и передавать настройки точке,шинам и т.д. из AE2?", a: "Карта памяти" },
                 { q: "Что делать если МЭ Система периодически включается и выключается?", a: "Поставить к МЭ кубу энергетические ячейки, желательно гибридные." },
                 { q: "Как настроить ячейку под определенный ресурс?", a: "Разметить ячейку в верстаке ячеек" },
                 { q: "Что нужно сделать чтобы соединить несколько МЭ Систем в одну?", a: "Провести из каждой МЭ Системы одну шину хранения и один МЭ интерфейс,\nрасположить их так, чтобы шина хранения одной МЭ Системы соединялась с МЭ интерфейсом второй системы. Если МЭ Систем больше 2 - аналогично по цепи." }
@@ -223,7 +236,7 @@
                 { q: "Для чего нужен и как работает магический сборщик?", a: "Автокрафты магического верстака, соеденить с помощью карты памяти интерфейс вис-реле и сборщик, шаблоны записываются на ядре знаний в высекателе знаний" },
                 { q: "Как сменить/снять набалдашник?", a: "Change wand Focus/ shift + change wand focus" },
                 { q: "Какие блоки увеличивают стабильность инфузии(матрицы)?", a: "Свечи, Кластеры, головы игроков, зомби, скелетов(и иссушителей), криперов, мецающие грибы, пилоны маны/гайа/природные, стабилизатор из лоли" },
-                { q: "Почему некоторые узлы ауры вытягивают энергию из других?", a: "Узлы находящиеся на близком расстоянии могут передавать между собой аспекты \"молниями\" энергии (узел может передавать энергию в области 7 на 7 на 7 с ним в центре), чем дальше стоят узлы, тем медленнее идет передача." },
+                { q: "Почему некоторые узлы ауры вытягивают энергию из других?", a: "Узлы находящиеся на близком расстоянии могут передавать между собой аспекты \"молниями\" энергии (узел может передавать энергию в области 7 на 7 на 7 с ним в центре), чем дальше стоят узлы, тем медленее идет передача." },
                 { q: "Как можно превратить обычный узел в заряженный?", a: "Поставить узел-стабилизатор, на него узел и сверху Узел-преобразователь(запитать красным камнем)" },
                 { q: "Как можно передать изучения другому игроку?", a: "Делать дубликаты свитков во время изучения(Иных способов нет)" },
                 { q: "Что нужно для работы ПБ конструкции?", a: "Нужно хранилище, аспекты, нитор под тигелем" }
@@ -344,9 +357,14 @@
             localStorage.setItem('interviewee', document.getElementById('interviewee').value);
             localStorage.setItem('interviewer', document.getElementById('interviewer').value);
         }
+
         function loadUserData() {
             document.getElementById('interviewee').value = localStorage.getItem('interviewee') || '';
             document.getElementById('interviewer').value = localStorage.getItem('interviewer') || '';
+        }
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
         }
 
         function shuffleArray(array) {
@@ -356,6 +374,14 @@
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
             return arr;
+        }
+
+        function parseRange(rangeStr) {
+            const parts = rangeStr.split('-').map(Number);
+            if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) {
+                return { min: 3, max: 5 };
+            }
+            return { min: Math.max(1, parts[0]), max: Math.min(23, parts[1]) };
         }
 
         function updateScores() {
@@ -380,35 +406,41 @@
             card.className = 'question-card';
             card.dataset.id = id;
             card.dataset.mod = mod;
+
             let score = currentScores[id] ?? null;
             const plusActive = score === 1 ? 'active' : '';
             const minusActive = score === 0 ? 'active' : '';
+
             card.innerHTML = `
                 <div class="question-text">${questionObj.q}</div>
-                <div class="answer">${questionObj.a}</div>
+                <div class="answer">${questionObj.a.replace(/\n/g, '<br>')}</div>
                 <div class="score-buttons">
                     <button class="score-btn plus ${plusActive}" data-value="1">+</button>
                     <button class="score-btn minus ${minusActive}" data-value="0">–</button>
-                    <button class="remove-btn">Удалить</button>
+                    <button class="score-btn remove-btn" style="margin-left:auto; padding:4px 8px; background:#4b5563;">Удалить</button>
                 </div>
             `;
+
             card.querySelector('.plus').addEventListener('click', () => {
                 currentScores[id] = 1;
                 card.querySelector('.plus').classList.add('active');
                 card.querySelector('.minus').classList.remove('active');
                 updateScores();
             });
+
             card.querySelector('.minus').addEventListener('click', () => {
                 currentScores[id] = 0;
                 card.querySelector('.minus').classList.add('active');
                 card.querySelector('.plus').classList.remove('active');
                 updateScores();
             });
+
             card.querySelector('.remove-btn').addEventListener('click', () => {
                 delete currentScores[id];
                 card.remove();
                 updateScores();
             });
+
             return card;
         }
 
@@ -417,14 +449,16 @@
             const container = document.getElementById('interview-container');
             container.innerHTML = '';
             currentScores = {};
-            const count = parseInt(document.getElementById('question-count').value) || 5;
-            generatedQuestions = [];
+
+            const rangeInput = document.getElementById('question-range').value.trim();
+            const { min, max } = parseRange(rangeInput);
 
             Object.entries(questionBank).forEach(([mod, questions]) => {
-                const actualCount = Math.min(count, questions.length);
+                const count = Math.min(getRandomInt(min, max), questions.length);
                 const shuffled = shuffleArray(questions);
-                const selected = shuffled.slice(0, actualCount);
+                const selected = shuffled.slice(0, count);
                 generatedQuestions.push(...selected.map((q, i) => ({ mod, q, i })));
+
                 const section = document.createElement('div');
                 section.className = 'mod-section';
                 section.dataset.mod = mod;
@@ -439,6 +473,7 @@
                 });
                 container.appendChild(section);
             });
+
             updateScores();
         }
 
@@ -452,12 +487,14 @@
             const interviewer = document.getElementById('interviewer').value || 'Не указано';
             const date = new Date().toISOString().split('T')[0];
             const total = parseInt(document.getElementById('total-score').textContent);
+
             const modScores = {};
             document.querySelectorAll('.mod-section').forEach(section => {
                 const mod = section.dataset.mod;
                 const score = parseInt(section.querySelector('.mod-score').textContent);
                 modScores[mod] = score;
             });
+
             const answers = [];
             Object.entries(currentScores).forEach(([id, score]) => {
                 const card = document.querySelector(`[data-id="${id}"]`);
@@ -467,6 +504,7 @@
                 const aText = card.querySelector('.answer').textContent;
                 answers.push({ mod, question: qText, answer: aText, score });
             });
+
             const report = {
                 interviewee,
                 interviewer,
@@ -475,6 +513,7 @@
                 modScores,
                 answers
             };
+
             const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -486,10 +525,11 @@
             URL.revokeObjectURL(url);
         }
 
-        // Инициализация
+        // === ИНИЦИАЛИЗАЦИЯ ===
         document.getElementById('generate-btn').addEventListener('click', generateQuestions);
         document.getElementById('restore-btn').addEventListener('click', restoreQuestions);
         document.getElementById('export-btn').addEventListener('click', exportReport);
+
         loadUserData();
         generateQuestions();
     </script>
