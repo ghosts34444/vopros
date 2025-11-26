@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Собеседование — LoliMods</title>
+    <title>Собеседование</title>
     <style>
         * {
             margin: 0;
@@ -68,10 +68,6 @@
             cursor: pointer;
             font-weight: 600;
             transition: all 0.2s;
-        }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(139, 92, 246, 0.4);
         }
         .total-score {
             text-align: center;
@@ -171,7 +167,6 @@
     </div>
 
     <script>
-        // === БАЗА ВОПРОСОВ И ОТВЕТОВ ===
         const questionBank = {
             "Industrial Craft 2": [
                 { q: "Что делает улучшение \"Затягиватель\"?", a: "Втягивает предметы из хранилища" },
@@ -333,7 +328,6 @@
             ]
         };
 
-        let generatedQuestions = [];
         let currentScores = {};
 
         function saveUserData() {
@@ -431,7 +425,6 @@
                 const count = Math.min(getRandomInt(min, max), questions.length);
                 const shuffled = shuffleArray(questions);
                 const selected = shuffled.slice(0, count);
-                generatedQuestions.push(...selected.map((q, i) => ({ mod, q, i })));
                 const section = document.createElement('div');
                 section.className = 'mod-section';
                 section.dataset.mod = mod;
@@ -442,15 +435,11 @@
                     </div>
                 `;
                 selected.forEach((item, idx) => {
-                    section.appendChild(createQuestionCard(mod, item.q, idx));
+                    section.appendChild(createQuestionCard(mod, item, idx));
                 });
                 container.appendChild(section);
             });
             updateScores();
-        }
-
-        function restoreQuestions() {
-            generateQuestions();
         }
 
         function exportReport() {
@@ -494,7 +483,7 @@
         }
 
         document.getElementById('generate-btn').addEventListener('click', generateQuestions);
-        document.getElementById('restore-btn').addEventListener('click', restoreQuestions);
+        document.getElementById('restore-btn').addEventListener('click', generateQuestions);
         document.getElementById('export-btn').addEventListener('click', exportReport);
 
         loadUserData();
