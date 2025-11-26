@@ -43,36 +43,22 @@
             color: #e0e0ff;
         }
         .controls {
-            background: #16162a;
-            padding: 15px;
-            border-radius: 12px;
+            text-align: center;
             margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-        }
-        .controls label {
-            font-weight: 600;
-        }
-        input, button {
-            padding: 8px 12px;
-            border-radius: 8px;
-            border: 1px solid #8b5cf6;
-            background: #1a1a2e;
-            color: #e0e0ff;
         }
         button {
+            padding: 8px 16px;
             background: linear-gradient(45deg, #8b5cf6, #6366f1);
             color: white;
+            border: none;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
-            transition: all 0.2s;
         }
         .total-score {
             text-align: center;
             font-size: 1.2rem;
-            margin: 15px 0;
+            margin-bottom: 15px;
             color: #a5b4fc;
         }
         .total-score span {
@@ -91,6 +77,7 @@
             justify-content: space-between;
             margin-bottom: 12px;
             color: #d8b4f8;
+            font-weight: bold;
         }
         .question-card {
             background: #1a1a2e;
@@ -100,7 +87,7 @@
             border-left: 3px solid #8b5cf6;
         }
         .question-text {
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 500;
         }
         .answer {
@@ -109,7 +96,6 @@
             border-radius: 6px;
             margin: 6px 0;
             font-style: italic;
-            font-size: 0.95rem;
             white-space: pre-wrap;
         }
         .score-buttons {
@@ -129,15 +115,6 @@
             transform: scale(1.1);
             box-shadow: 0 0 8px rgba(255,255,255,0.6);
         }
-        .remove-btn {
-            margin-left: auto;
-            padding: 4px 8px;
-            background: #4b5563;
-            color: #e0e0ff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -149,18 +126,12 @@
             <input type="text" id="interviewer" placeholder="Кто проводит собеседование">
         </div>
 
-        <div class="controls">
-            <label>
-                Вопросов на мод (диапазон, например: 3-5):
-                <input type="text" id="question-range" placeholder="3-5" value="3-5">
-            </label>
-            <button id="generate-btn">Сгенерировать</button>
-            <button id="restore-btn">Вернуть все</button>
-            <button id="export-btn">Сохранить отчёт (.json)</button>
+        <div class="total-score">
+            Всего: <span id="total-count">0</span> вопросов / <span id="total-score">0</span> баллов
         </div>
 
-        <div class="total-score">
-            Общий балл: <span id="total-score">0</span>
+        <div class="controls">
+            <button id="export-btn">Сохранить отчёт (.json)</button>
         </div>
 
         <div id="interview-container"></div>
@@ -208,7 +179,7 @@
                 { q: "Как узнать что нужно для открытия изучения \"ихор\"?", a: "Shift в неи на Ихор" },
                 { q: "Как убрать заражение? (слизь, жидкость, пары)", a: "Лопата очистителя." },
                 { q: "Для чего нужна мнемоническая матрица?", a: "Увеличивает кол-во запоминаемых крафтов в алхим. конструкции на 2" },
-                { q: "Как сделать Наэлектризированное облако?", a: "Кликнуть заряженным аккумулятором(бронзовым) по обычному нитору" },
+                { q: "Как сделать Наэлектризованное облако?", a: "Кликнуть заряженным аккумулятором(бронзовым) по обычному нитору" },
                 { q: "Какие способы существуют для наполнения жезла висом?", a: "Станция для зарядки жезлов, синтезатор маны для жезлов, узел, плита зарядки жезлов (LoliUtility)" },
                 { q: "Как получить сосуд багровый крови?", a: "Взять в инвентарь стеклянные пузырьки из Thaumcraft, бить ЛКМ полым кинжалом по живым мобам." },
                 { q: "Для чего нужен и как работает магический сборщик?", a: "Автокрафты магического верстака, соеденить с помощью карты памяти интерфейс вис-реле и сборщик, шаблоны записываются на ядре знаний в высекателе знаний" },
@@ -334,45 +305,39 @@
             localStorage.setItem('interviewee', document.getElementById('interviewee').value);
             localStorage.setItem('interviewer', document.getElementById('interviewer').value);
         }
+
         function loadUserData() {
             document.getElementById('interviewee').value = localStorage.getItem('interviewee') || '';
             document.getElementById('interviewer').value = localStorage.getItem('interviewer') || '';
         }
 
-        function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        function shuffleArray(array) {
-            const arr = [...array];
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        function parseRange(rangeStr) {
-            const parts = rangeStr.split('-').map(Number);
-            if (parts.length !== 2 || isNaN(parts[0]) || isNaN(parts[1])) {
-                return { min: 3, max: 5 };
-            }
-            return { min: Math.max(1, parts[0]), max: Math.min(23, parts[1]) };
-        }
-
         function updateScores() {
-            let total = 0;
-            const modScores = {};
-            Object.keys(currentScores).forEach(id => {
-                const score = currentScores[id];
-                const mod = document.querySelector(`[data-id="${id}"]`).dataset.mod;
-                modScores[mod] = (modScores[mod] || 0) + score;
-                total += score;
+            let totalQuestions = 0;
+            let totalScore = 0;
+            const modEls = {};
+
+            Object.entries(questionBank).forEach(([mod, questions]) => {
+                const count = questions.length;
+                const scored = questions
+                    .map((_, i) => currentScores[`${mod}-${i}`])
+                    .filter(s => s !== undefined)
+                    .reduce((sum, s) => sum + (s || 0), 0);
+                totalQuestions += count;
+                totalScore += scored;
+                modEls[mod] = { count, scored };
             });
-            document.getElementById('total-score').textContent = total;
-            Object.keys(modScores).forEach(mod => {
-                const el = document.querySelector(`.mod-section[data-mod="${mod}"] .mod-score`);
-                if (el) el.textContent = modScores[mod];
+
+            document.getElementById('total-count').textContent = totalQuestions;
+            document.getElementById('total-score').textContent = totalScore;
+
+            Object.entries(modEls).forEach(([mod, { count, scored }]) => {
+                const header = document.querySelector(`.mod-section[data-mod="${mod}"] .mod-header`);
+                if (header) {
+                    header.innerHTML = `
+                        <div>${mod}</div>
+                        <div>${count} вопросов / ${scored} баллов</div>
+                    `;
+                }
             });
         }
 
@@ -380,65 +345,59 @@
             const id = `${mod}-${index}`;
             const card = document.createElement('div');
             card.className = 'question-card';
-            card.dataset.id = id;
-            card.dataset.mod = mod;
-            let score = currentScores[id] ?? null;
+
+            let score = currentScores[id];
             const plusActive = score === 1 ? 'active' : '';
             const minusActive = score === 0 ? 'active' : '';
+
             card.innerHTML = `
                 <div class="question-text">${questionObj.q}</div>
                 <div class="answer">${questionObj.a}</div>
                 <div class="score-buttons">
-                    <button class="score-btn plus ${plusActive}" data-value="1">+</button>
-                    <button class="score-btn minus ${minusActive}" data-value="0">–</button>
-                    <button class="remove-btn">Удалить</button>
+                    <button class="score-btn plus ${plusActive}" data-id="${id}" data-value="1">+</button>
+                    <button class="score-btn minus ${minusActive}" data-id="${id}" data-value="0">–</button>
                 </div>
             `;
-            card.querySelector('.plus').addEventListener('click', () => {
+
+            card.querySelector('.plus').addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
                 currentScores[id] = 1;
-                card.querySelector('.plus').classList.add('active');
+                updateScores();
+                e.target.classList.add('active');
                 card.querySelector('.minus').classList.remove('active');
-                updateScores();
             });
-            card.querySelector('.minus').addEventListener('click', () => {
+
+            card.querySelector('.minus').addEventListener('click', (e) => {
+                const id = e.target.dataset.id;
                 currentScores[id] = 0;
-                card.querySelector('.minus').classList.add('active');
+                updateScores();
+                e.target.classList.add('active');
                 card.querySelector('.plus').classList.remove('active');
-                updateScores();
             });
-            card.querySelector('.remove-btn').addEventListener('click', () => {
-                delete currentScores[id];
-                card.remove();
-                updateScores();
-            });
+
             return card;
         }
 
-        function generateQuestions() {
-            saveUserData();
+        function initInterview() {
             const container = document.getElementById('interview-container');
             container.innerHTML = '';
-            currentScores = {};
-            const rangeInput = document.getElementById('question-range').value.trim();
-            const { min, max } = parseRange(rangeInput);
+
             Object.entries(questionBank).forEach(([mod, questions]) => {
-                const count = Math.min(getRandomInt(min, max), questions.length);
-                const shuffled = shuffleArray(questions);
-                const selected = shuffled.slice(0, count);
                 const section = document.createElement('div');
                 section.className = 'mod-section';
                 section.dataset.mod = mod;
                 section.innerHTML = `
                     <div class="mod-header">
-                        <div class="mod-name">${mod}</div>
-                        <div class="mod-score">0</div>
+                        <div>${mod}</div>
+                        <div>Загрузка...</div>
                     </div>
                 `;
-                selected.forEach((item, idx) => {
-                    section.appendChild(createQuestionCard(mod, item, idx));
+                questions.forEach((q, i) => {
+                    section.appendChild(createQuestionCard(mod, q, i));
                 });
                 container.appendChild(section);
             });
+
             updateScores();
         }
 
@@ -447,30 +406,29 @@
             const interviewee = document.getElementById('interviewee').value || 'Не указано';
             const interviewer = document.getElementById('interviewer').value || 'Не указано';
             const date = new Date().toISOString().split('T')[0];
-            const total = parseInt(document.getElementById('total-score').textContent);
-            const modScores = {};
-            document.querySelectorAll('.mod-section').forEach(section => {
-                const mod = section.dataset.mod;
-                const score = parseInt(section.querySelector('.mod-score').textContent);
-                modScores[mod] = score;
-            });
+            const totalQuestions = parseInt(document.getElementById('total-count').textContent);
+            const totalScore = parseInt(document.getElementById('total-score').textContent);
+
             const answers = [];
-            Object.entries(currentScores).forEach(([id, score]) => {
-                const card = document.querySelector(`[data-id="${id}"]`);
-                if (!card) return;
-                const mod = card.dataset.mod;
-                const qText = card.querySelector('.question-text').textContent;
-                const aText = card.querySelector('.answer').textContent;
-                answers.push({ mod, question: qText, answer: aText, score });
+            Object.entries(questionBank).forEach(([mod, questions]) => {
+                questions.forEach((q, i) => {
+                    const id = `${mod}-${i}`;
+                    const score = currentScores[id];
+                    if (score !== undefined) {
+                        answers.push({ mod, question: q.q, answer: q.a, score });
+                    }
+                });
             });
+
             const report = {
                 interviewee,
                 interviewer,
                 date,
-                totalScore: total,
-                modScores,
+                totalQuestions,
+                totalScore,
                 answers
             };
+
             const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
@@ -482,12 +440,9 @@
             URL.revokeObjectURL(url);
         }
 
-        document.getElementById('generate-btn').addEventListener('click', generateQuestions);
-        document.getElementById('restore-btn').addEventListener('click', generateQuestions);
         document.getElementById('export-btn').addEventListener('click', exportReport);
-
         loadUserData();
-        generateQuestions();
+        initInterview();
     </script>
 </body>
 </html>
