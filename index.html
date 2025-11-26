@@ -315,35 +315,43 @@
             document.getElementById('interviewer').value = localStorage.getItem('interviewer') || '';
         }
 
-        function updateScores() {
-            let totalQuestions = 0;
-            let totalScore = 0;
-            const modEls = {};
+   function updateScores() {
+    let totalScoredQuestions = 0;
+    let totalScore = 0;
+    const modEls = {};
 
-            Object.entries(questionBank).forEach(([mod, questions]) => {
-                const count = questions.length;
-                const scored = questions
-                    .map((_, i) => currentScores[`${mod}-${i}`])
-                    .filter(s => s !== undefined)
-                    .reduce((sum, s) => sum + (s || 0), 0);
-                totalQuestions += count;
-                totalScore += scored;
-                modEls[mod] = { count, scored };
-            });
+    Object.entries(questionBank).forEach(([mod, questions]) => {
+        let modScored = 0;
+        let modScore = 0;
 
-            document.getElementById('total-count').textContent = totalQuestions;
-            document.getElementById('total-score').textContent = totalScore;
+        questions.forEach((_, i) => {
+            const score = currentScores[`${mod}-${i}`];
+            if (score !== undefined) {
+                modScored++;
+                modScore += score; // score = 1 или 0
+            }
+        });
 
-            Object.entries(modEls).forEach(([mod, { count, scored }]) => {
-                const header = document.querySelector(`.mod-section[data-mod="${mod}"] .mod-header`);
-                if (header) {
-                    header.innerHTML = `
-                        <div>${mod}</div>
-                        <div>${count} вопросов / ${scored} баллов</div>
-                    `;
-                }
-            });
+        totalScoredQuestions += modScored;
+        totalScore += modScore;
+        modEls[mod] = { scored: modScored, score: modScore };
+    });
+
+    // Общий счётчик: только оценённые вопросы
+    document.getElementById('total-count').textContent = totalScoredQuestions;
+    document.getElementById('total-score').textContent = totalScore;
+
+    // Счётчик по моду: "оценено вопросов / баллов"
+    Object.entries(modEls).forEach(([mod, { scored, score }]) => {
+        const header = document.querySelector(`.mod-section[data-mod="${mod}"] .mod-header`);
+        if (header) {
+            header.innerHTML = `
+                <div>${mod}</div>
+                <div>${scored} вопросов / ${score} баллов</div>
+            `;
         }
+    });
+}
 
         function createQuestionCard(mod, questionObj, index) {
             const id = `${mod}-${index}`;
